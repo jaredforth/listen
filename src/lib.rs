@@ -17,7 +17,20 @@ pub struct ListenerOptions<T, R> {
 /// This function takes a path to listen on, the event to listen for,
 /// and a function to execute when that event happens.
 pub fn listen<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
-    func(arg);
+    match event {
+        Event::OnFileAdd=> {
+            println!("listen for added file");
+            func(arg);
+        },
+        Event::OnFileRemove => {
+            println!("listen for removed file");
+            func(arg);
+        }
+    }
+}
+
+fn listener(event: Event) -> bool {
+    // TODO add walkdir
 }
 
 #[cfg(test)]
