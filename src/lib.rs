@@ -1,3 +1,5 @@
+use walkdir::WalkDir;
+
 pub enum Event {
     OnFileAdd,
     OnFileRemove
@@ -20,17 +22,51 @@ pub fn listen<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
     match event {
         Event::OnFileAdd=> {
             println!("listen for added file");
-            func(arg);
+            listener(Event::OnFileAdd, path);
         },
         Event::OnFileRemove => {
             println!("listen for removed file");
-            func(arg);
+            listener(Event::OnFileRemove, path);
         }
     }
 }
 
-fn listener(event: Event) -> bool {
-    // TODO add walkdir
+fn listener(_event: Event, path: &str) {
+    let mut changed: bool = false;
+    let initial_count = count_directory_files(path);
+    println!("initial count: {}", initial_count);
+
+    while !changed {
+        let count = count_directory_files(path);
+        if count == initial_count {
+            continue
+        } else {
+            changed = true
+        }
+    }
+}
+
+fn count_directory_files(path: &str) -> i64 {
+    let mut count = 0;
+    for entry in WalkDir::new(path).max_depth(1) {
+        match entry {
+            Ok(entry) => {
+                let path = entry.path();
+                // Check if is file
+                if !path.is_dir() {
+                    // println!("Path: {:?}", path);
+                    count = count + 1;
+                    //     // Check if is CSV file and push to vector
+                    //     if path.extension() == Some(OsStr::new("csv")) {
+                    //         let path_str = String::from(path.to_str().unwrap());
+                    //         studies.push(path_str);
+                    //     }
+                }
+            },
+            Err(_) => ()
+        }
+    }
+    count
 }
 
 #[cfg(test)]
