@@ -22,16 +22,20 @@ pub fn listen<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
     match event {
         Event::OnFileAdd=> {
             println!("listen for added file");
-            listener(Event::OnFileAdd, path);
+            if listener(Event::OnFileAdd, path) {
+                func(arg);
+            }
         },
         Event::OnFileRemove => {
             println!("listen for removed file");
-            listener(Event::OnFileRemove, path);
+            if listener(Event::OnFileRemove, path) {
+                func(arg);
+            }
         }
     }
 }
 
-fn listener(_event: Event, path: &str) {
+fn listener(_event: Event, path: &str) -> bool {
     let mut changed: bool = false;
     let initial_count = count_directory_files(path);
     println!("initial count: {}", initial_count);
@@ -44,6 +48,8 @@ fn listener(_event: Event, path: &str) {
             changed = true
         }
     }
+
+    changed
 }
 
 fn count_directory_files(path: &str) -> i64 {
