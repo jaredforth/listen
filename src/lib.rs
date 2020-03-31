@@ -21,13 +21,11 @@ pub struct ListenerOptions<T, R> {
 pub fn listen<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
     match event {
         Event::OnFileAdd=> {
-            println!("listen for added file");
             if listener(Event::OnFileAdd, path) {
                 func(arg);
             }
         },
         Event::OnFileRemove => {
-            println!("listen for removed file");
             if listener(Event::OnFileRemove, path) {
                 func(arg);
             }
