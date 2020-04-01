@@ -47,7 +47,6 @@ pub fn listen<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
 fn listener(_event: Event, path: &str) -> bool {
     let mut changed: bool = false;
     let initial_count = count_directory_files(path);
-    println!("initial count: {}", initial_count);
 
     while !changed {
         let count = count_directory_files(path);
