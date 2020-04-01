@@ -1,10 +1,21 @@
 use walkdir::WalkDir;
 
+/// `Event` enumerates the possible filesystem events
+/// that can be listened for.
 pub enum Event {
+    /// If a file is added or removed from the directory
+    /// this event is triggered.
+    OnFileChange,
+    /// If a file is added to the directory
+    /// this event is triggered.
     OnFileAdd,
-    OnFileRemove,
+    /// If a file is removed from the directory
+    /// this event is triggered.
+    OnFileRemove
 }
 
+/// `ListenerOptions` contains the configuration details for
+/// The `listen` function.
 pub struct ListenerOptions<T, R> {
     /// The path to listen on
     path: &'static str,
