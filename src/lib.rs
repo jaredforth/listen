@@ -14,11 +14,8 @@ pub enum Event {
     OnFileRemove
 }
 
-/// `ListenerOptions` contains the configuration details for
-/// The `listen` function.
+/// Listener with default options.
 pub struct Listener {
-    //The path to listen on
-    // path: &'static str,
     /// The event to listen for
     event: Event,
     /// If true, the listener will store files in `store_files`;
@@ -27,10 +24,6 @@ pub struct Listener {
     /// Vector of all files currently in directory
     /// listened to.
     pub files: Vec<String>
-    // The argument to pass to `func`
-    // arg: T,
-    // Function to execute when event happens
-    // func: fn(T) -> R,
 }
 
 impl Listener {
@@ -43,6 +36,11 @@ impl Listener {
     }
     /// This function takes a path to listen on, the event to listen for,
     /// and a function to execute when that event happens.
+    ///
+    /// `path: &str` is the directory to listen on,
+    /// `arg: T` is the argument to pass to `func`,
+    /// and
+    /// `func: fn(T) -> R` is the function to execute when event happens
     pub fn listen<T, R>(&mut self, path: &str, arg: T, func: fn(T) -> R) {
         match self.event {
             Event::OnFileChange => {
