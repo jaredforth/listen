@@ -2,7 +2,7 @@ use walkdir::WalkDir;
 
 pub enum Event {
     OnFileAdd,
-    OnFileRemove
+    OnFileRemove,
 }
 
 pub struct ListenerOptions<T, R> {
@@ -13,18 +13,18 @@ pub struct ListenerOptions<T, R> {
     /// The argument to pass to `func`
     arg: T,
     /// Function to execute when event happens
-    func: fn(T) -> R
+    func: fn(T) -> R,
 }
 
 /// This function takes a path to listen on, the event to listen for,
 /// and a function to execute when that event happens.
 pub fn listen<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
     match event {
-        Event::OnFileAdd=> {
+        Event::OnFileAdd => {
             if listener(Event::OnFileAdd, path) {
                 func(arg);
             }
-        },
+        }
         Event::OnFileRemove => {
             if listener(Event::OnFileRemove, path) {
                 func(arg);
@@ -41,7 +41,7 @@ fn listener(_event: Event, path: &str) -> bool {
     while !changed {
         let count = count_directory_files(path);
         if count == initial_count {
-            continue
+            continue;
         } else {
             changed = true
         }
@@ -66,26 +66,9 @@ fn count_directory_files(path: &str) -> i64 {
                     //         studies.push(path_str);
                     //     }
                 }
-            },
+            }
             Err(_) => ()
         }
     }
     count
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::{listen, Event};
-
-    #[test]
-    fn test_listen() {
-        // Create test directory
-        fsutils::mkdir("test_directory");
-        fn print_to_console(arg: &str) {
-            println!("file added {}", arg);
-        }
-        let l = listen::<&str, ()>("test_directory", Event::OnFileAdd, "the function argument", print_to_console);
-        // Clean up
-        fsutils::rmdir("test_directory");
-    }
 }
