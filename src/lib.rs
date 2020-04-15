@@ -26,7 +26,7 @@ pub fn listen<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
     internal_listener(path, event, arg, func);
 }
 
-/// A Listener.
+/// A Listener
 pub struct Listener {
     /// The event to listen for
     event: Event,
@@ -122,7 +122,7 @@ impl Listener {
     }
 }
 
-fn internal_listener<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
+fn internal_listener<T, R>(path: &str, _event: Event, arg: T, func: fn(T) -> R) {
     let mut listener = Listener::new();
     listener.listen(path, arg, func);
 }
