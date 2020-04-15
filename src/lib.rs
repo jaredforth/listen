@@ -14,7 +14,19 @@ pub enum Event {
     OnFileRemove
 }
 
-/// Listener with default options.
+/// This function takes a path to listen on, the event to listen for,
+/// and a function to execute when that event happens.
+///
+/// `path: &str` is the directory to listen on,
+/// `event: Event` is the event to listen for,
+/// `arg: T` is the argument to pass to `func`,
+/// and
+/// `func: fn(T) -> R` is the function to execute when event happens
+pub fn listen<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
+    internal_listener(path, event, arg, func);
+}
+
+/// A Listener.
 pub struct Listener {
     /// The event to listen for
     event: Event,
@@ -23,16 +35,22 @@ pub struct Listener {
     store_files: bool,
     /// Vector of all files currently in directory
     /// listened to.
-    pub files: Vec<String>
+    pub files: Vec<String>,
+}
+
+impl Default for Listener {
+    fn default() -> Self {
+        Listener {
+            event: Event::OnFileChange,
+            store_files: false,
+            files: vec![],
+        }
+    }
 }
 
 impl Listener {
     pub fn new() -> Listener {
-        Listener {
-            event: Event::OnFileChange,
-            store_files: false,
-            files: vec![]
-        }
+        Listener::default()
     }
     /// This function takes a path to listen on, the event to listen for,
     /// and a function to execute when that event happens.
@@ -47,7 +65,7 @@ impl Listener {
                 if self.file_change_listener(path) {
                     func(arg);
                 }
-            },
+            }
             Event::OnFileAdd => {
                 unimplemented!()
             }
@@ -102,4 +120,9 @@ impl Listener {
         }
         count
     }
+}
+
+fn internal_listener<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
+    let mut listener = Listener::new();
+    listener.listen(path, arg, func);
 }
