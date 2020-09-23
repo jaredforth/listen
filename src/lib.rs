@@ -14,6 +14,7 @@ use walkdir::WalkDir;
 
 /// `Event` enumerates the possible filesystem events
 /// that can be listened for.
+#[derive(Debug)]
 pub enum Event {
     /// If a file is added or removed from the directory
     /// this event is triggered.
@@ -39,6 +40,7 @@ pub fn listen<T, R>(path: &str, event: Event, arg: T, func: fn(T) -> R) {
 }
 
 /// A Listener
+#[derive(Debug)]
 pub struct Listener {
     /// The event to listen for
     event: Event,
@@ -131,6 +133,18 @@ impl Listener {
             }
         }
         count
+    }
+    /// Configure listener to store files
+    ///
+    /// ## Usage:
+    ///
+    /// ```
+    ///   let mut listener = listen::Listener::new();
+    ///
+    ///   listener.store_files(true);
+    /// ```
+    pub fn store_files(&mut self, store_files: bool) {
+        self.store_files = store_files;
     }
 }
 

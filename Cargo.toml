@@ -1,6 +1,6 @@
 [package]
 name = "listen"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Jared Forth <jaredforthdev@gmail.com>"]
 edition = "2018"
 description = "A listener for filesystem events that executes a function when the event occurs"
